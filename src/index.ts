@@ -20,7 +20,7 @@ configure({
   }
 })
 
-async function main() {
+function main() {
   siteConfigList.forEach(async siteConfig => {
     try {
       const result: StockResult = await checkStock(siteConfig)

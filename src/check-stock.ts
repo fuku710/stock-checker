@@ -1,5 +1,6 @@
 import { JSDOM } from 'jsdom'
 import axios from 'axios'
+import puppeteer from 'puppeteer'
 import * as iconv from 'iconv-lite'
 import { SiteConfig } from './config'
 
@@ -36,7 +37,20 @@ async function checkStock(config: SiteConfig): Promise<StockResult> {
   try {
     const { url, encoding, selector, noStockWord } = config
 
-    const dom: JSDOM = await fetchHTML(url, encoding)
+    console.log('crawl')
+    const browser: puppeteer.Browser = await puppeteer.launch({
+      headless: false
+    })
+
+    const page: puppeteer.Page = await browser.newPage()
+    await page.goto(url)
+    await page.waitForSelector(selector)
+    const html = await page.evaluate(
+      () => window.document.querySelector('html').innerHTML
+    )
+    await browser.close()
+
+    const dom = new JSDOM(html)
     const document: Document = dom.window.document
     const targetElement: Element = document.querySelector(selector)
 
@@ -47,7 +61,7 @@ async function checkStock(config: SiteConfig): Promise<StockResult> {
     const result: StockResult = { status, text, hasStock, config }
     return result
   } catch (err) {
-    return err
+    throw err
   }
 }
 
