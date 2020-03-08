@@ -33,18 +33,22 @@ function getResultStatus(element: Element, noStockWord: string): string {
 }
 
 async function checkStock(config: SiteConfig): Promise<StockResult> {
-  const { url, encoding, selector, noStockWord } = config
+  try {
+    const { url, encoding, selector, noStockWord } = config
 
-  const dom: JSDOM = await fetchHTML(url, encoding)
-  const document: Document = dom.window.document
-  const targetElement: Element = document.querySelector(selector)
+    const dom: JSDOM = await fetchHTML(url, encoding)
+    const document: Document = dom.window.document
+    const targetElement: Element = document.querySelector(selector)
 
-  const status: string = getResultStatus(targetElement, noStockWord)
-  const text: string =
-    status === 'ELEMENT_IS_REMOVED' ? null : targetElement.textContent.trim()
-  const hasStock: boolean = status !== 'NO_CHANGE'
-  const result: StockResult = { status, text, hasStock, config }
-  return result
+    const status: string = getResultStatus(targetElement, noStockWord)
+    const text: string =
+      status === 'ELEMENT_IS_REMOVED' ? null : targetElement.textContent.trim()
+    const hasStock: boolean = status !== 'NO_CHANGE'
+    const result: StockResult = { status, text, hasStock, config }
+    return result
+  } catch (err) {
+    return err
+  }
 }
 
 export { StockResult, checkStock }
