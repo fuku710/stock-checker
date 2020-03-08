@@ -17,7 +17,7 @@ configure({
 })
 
 async function main() {
-  const job: CronJob = new CronJob('* 0 * * * *', () => {
+  const job: CronJob = new CronJob('0 0 * * * *', () => {
     siteConfigList.forEach(async siteConfig => {
       const result: StockResult = await checkStock(siteConfig)
       if (result.hasStock) {
