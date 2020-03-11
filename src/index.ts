@@ -1,24 +1,12 @@
 import { CronJob } from 'cron'
-import { getLogger, configure } from 'log4js'
 import { checkStock, StockResult } from './check-stock'
+import { logger } from './log'
 import { sendMessageToLine } from './notification'
 import { SiteConfig } from './config'
 import siteConfigJSON from './site-config.json'
 
 const siteConfigList: SiteConfig[] = siteConfigJSON
-const logger = getLogger()
 const job: CronJob = new CronJob('0 0 * * * *', main)
-
-configure({
-  appenders: {
-    result: { type: 'file', filename: './logs/result.log' },
-    error: { type: 'file', filename: './logs/error.log' }
-  },
-  categories: {
-    default: { appenders: ['result'], level: 'info' },
-    error: { appenders: ['error'], level: 'error' }
-  }
-})
 
 async function main() {
   siteConfigList.forEach(async siteConfig => {
