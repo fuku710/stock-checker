@@ -9,7 +9,8 @@ const siteConfigList: SiteConfig[] = siteConfigJSON
 const job: CronJob = new CronJob('0 0 * * * *', main)
 
 async function main() {
-  siteConfigList.forEach(async siteConfig => {
+  siteConfigList.forEach(async (siteConfig) => {
+    sleep(Math.random() * 3600)
     try {
       const result: StockResult = await checkStock(siteConfig)
       if (result.hasStock) {
@@ -21,6 +22,10 @@ async function main() {
       logger.error(err)
     }
   })
+}
+
+async function sleep(s: number) {
+  return new Promise((resolve) => setTimeout(resolve, s))
 }
 
 job.start()
