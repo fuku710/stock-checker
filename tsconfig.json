@@ -6,5 +6,8 @@
     "module": "CommonJS",
     "resolveJsonModule": true,
     "esModuleInterop": true
-  }
+  },
+  "exclude": [
+    "**/*.test.ts"
+  ]
 }
